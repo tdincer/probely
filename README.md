@@ -37,8 +37,6 @@ To plot the probe in 3D:
 P.plot3d(show=True)
 ```
 
-![Single Probe 3D](images/SingleProbe3d.png)
-
 # Installation
 ```
 pip install probely
