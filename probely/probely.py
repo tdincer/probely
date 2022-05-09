@@ -359,7 +359,7 @@ class Probe:
         self.d_pixels = [Square(self.d_box_length, self.d_box_length, False) for coor in coords]
         [i[0].translate(i[1]) for i in zip(self.d_pixels, coords)]
 
-    def plot_2d(self, e_pixels=True, d_pixels=True, fig=None, show=False, rotate=True):
+    def plot2d(self, e_pixels=True, d_pixels=True, fig=None, show=False, rotate=True):
         if not fig:
             fig = go.Figure()
 
@@ -408,25 +408,37 @@ class Probe:
             ]
 
         fig.update_layout(showlegend=False)
+        fig.update_layout(
+            font_family="Times New Roman",
+            font_color="black",
+            title_font_family="Times New Roman",
+            title_font_color="black",
+            legend_title_font_color="black",
+            xaxis_title="Z-axis",
+            yaxis_title="X-axis",
+            title=self.name,
+        )
         if show:
             fig.show()
 
-    def plot_probe3d(
+    def plot3d(
         self,
         fig=None,
         show=False,
         probe_surfacecolor="gray",
         e_pixel_surfacecolor="turquoise",
         d_pixel_surfacecolor="blue",
-        cone=True,
+        probe_direction=True,
+        emitter_direction=False,
+        detector_direction=False,
         e_pixels=False,
         d_pixels=False,
     ):
         if not fig:
             fig = go.Figure()
 
-        if cone:
-            size_ref = np.mean([norm(self.bl - self.br), norm(self.br - self.tr)]) * 0.05
+        size_ref = np.mean([norm(self.bl - self.br), norm(self.br - self.tr)]) * 0.05
+        if probe_direction:
             fig.add_traces(
                 go.Cone(
                     x=[
@@ -479,7 +491,10 @@ class Probe:
         if e_pixels:
             [
                 e_pixel.plot_squares3d(
-                    fig=fig, surfacecolor=e_pixel_surfacecolor, cone=True, size_ref=size_ref
+                    fig=fig,
+                    surfacecolor=e_pixel_surfacecolor,
+                    cone=emitter_direction,
+                    size_ref=size_ref,
                 )
                 for e_pixel in self.e_pixels
             ]
@@ -488,7 +503,10 @@ class Probe:
         if d_pixels:
             [
                 d_pixel.plot_squares3d(
-                    fig=fig, surfacecolor=d_pixel_surfacecolor, cone=True, size_ref=size_ref
+                    fig=fig,
+                    surfacecolor=d_pixel_surfacecolor,
+                    cone=detector_direction,
+                    size_ref=size_ref,
                 )
                 for d_pixel in self.d_pixels
             ]
@@ -500,9 +518,15 @@ class Probe:
                 yaxis=dict(range=[self.centroid[1] - delta, self.centroid[1] + delta]),
                 zaxis=dict(range=[self.centroid[2] - delta, self.centroid[2] + delta]),
             ),
+            coloraxis_showscale=False,
+            autosize=False,
+            width=1000,
+            height=1000,
+            font_color="black",
+            title_font_color="black",
+            legend_title_font_color="black",
+            title=self.name,
         )
-        fig.update_layout(coloraxis_showscale=False)
-
         config = {"displayModeBar": False}
         if show:
             fig.show(config=config)
