@@ -25,11 +25,19 @@ P = Probe(
 To plot the probe in 2D:
 
 ```python
-P.plot_2d(show=True)
+P.plot2d(show=True)
 ```
 
 ![Single Probe with emitters](images/SingleProbeemitteronly.png)
 
+
+To plot the probe in 3D:
+
+```python
+P.plot3d(show=True)
+```
+
+![Single Probe with emitters](images/SingleProbe3d.png)
 
 # Installation
 ```
