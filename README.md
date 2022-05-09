@@ -28,7 +28,7 @@ To plot the probe in 2D:
 P.plot2d(show=True)
 ```
 
-![Single Probe with emitters](images/SingleProbeemitteronly.png)
+![Single Probe 2D](images/SingleProbeemitteronly.png)
 
 
 To plot the probe in 3D:
@@ -37,7 +37,7 @@ To plot the probe in 3D:
 P.plot3d(show=True)
 ```
 
-![Single Probe with emitters](images/SingleProbe3d.png)
+![Single Probe 3D](images/SingleProbe3d.png)
 
 # Installation
 ```
