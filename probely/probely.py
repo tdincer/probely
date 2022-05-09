@@ -409,11 +409,6 @@ class Probe:
 
         fig.update_layout(showlegend=False)
         fig.update_layout(
-            font_family="Times New Roman",
-            font_color="black",
-            title_font_family="Times New Roman",
-            title_font_color="black",
-            legend_title_font_color="black",
             xaxis_title="Z-axis",
             yaxis_title="X-axis",
             title=self.name,
@@ -522,9 +517,6 @@ class Probe:
             autosize=False,
             width=1000,
             height=1000,
-            font_color="black",
-            title_font_color="black",
-            legend_title_font_color="black",
             title=self.name,
         )
         config = {"displayModeBar": False}
