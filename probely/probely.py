@@ -294,55 +294,57 @@ class Probe:
         zs = np.round([self.br[2], self.tr[2], self.tl[2], self.bl[2], self.tip[2]], precision)
         return xs, ys, zs
 
+    def centroids(self, margin, box_length, box_sep, n_box):
+        # Initial positions of the pixels
+        points = np.array(
+            [margin + box_length / 2 + i * (box_length + box_sep) for i in range(n_box)]
+        )
+        return points - points.mean()
+
     def e_centroids(self):
         # Initial positions of the E-pixels
-        xs = np.array(
-            [
-                self.e_box_horizontal_margin
-                + self.e_box_length / 2
-                + i * (self.e_box_length + self.e_box_sep)
-                for i in range(self.n_e_box[0])
-            ]
+        xs = self.centroids(
+            self.e_box_horizontal_margin,
+            self.e_box_length,
+            self.e_box_sep,
+            self.n_e_box[0],
         )
-        xs -= xs.mean()
 
-        zs = np.array(
-            [
-                self.e_box_vertical_margin
-                + self.e_box_length / 2
-                + i * (self.e_box_length + self.e_box_sep)
-                for i in range(self.n_e_box[1])
-            ]
+        zs = self.centroids(
+            self.e_box_vertical_margin,
+            self.e_box_length,
+            self.e_box_sep,
+            self.n_e_box[1],
         )
-        zs -= zs.mean()
+
         return [[x, 0, z] for x in xs for z in zs]
 
     def d_centroids(self):
-        xs = np.array(
-            [
-                self.d_box_horizontal_margin
-                + self.d_box_length / 2
-                + i * (self.d_box_length + self.d_box_sep)
-                for i in range(self.n_d_box[0])
-            ]
+        # Initial positions of the D-pixels
+        xs = self.centroids(
+            self.d_box_horizontal_margin,
+            self.d_box_length,
+            self.d_box_sep,
+            self.n_d_box[0],
         )
-        xs -= xs.mean()
-        zs = np.array(
-            [
-                self.d_box_vertical_margin
-                + self.d_box_length / 2
-                + i * (self.d_box_length + self.d_box_sep)
-                for i in range(self.n_d_box[1])
-            ]
+
+        zs = self.centroids(
+            self.d_box_vertical_margin,
+            self.d_box_length,
+            self.d_box_sep,
+            self.n_d_box[1],
         )
-        zs -= zs.mean()
 
         candidates = [[x, 0, z] for x in xs for z in zs]
         e_pixels = self.e_centroids()
         e_xs = set([centroid[0] for centroid in e_pixels])
         e_zs = set([centroid[2] for centroid in e_pixels])
-        x_overlaps = [x for x in xs for ex in e_xs if (abs(x - ex) <= self.e_box_length / 2)]
-        z_overlaps = [z for z in zs for ez in e_zs if (abs(z - ez) <= self.e_box_length / 2)]
+        x_overlaps = [
+            x for x in xs for ex in e_xs if (abs(x - ex) <= self.e_box_length / 2)
+        ]
+        z_overlaps = [
+            z for z in zs for ez in e_zs if (abs(z - ez) <= self.e_box_length / 2)
+        ]
         return [
             candidate
             for candidate in candidates
@@ -351,12 +353,16 @@ class Probe:
 
     def init_e_boxes(self):
         coords = self.e_centroids()
-        self.e_pixels = [Square(self.e_box_length, self.e_box_length, True) for coor in coords]
+        self.e_pixels = [
+            Square(self.e_box_length, self.e_box_length, True) for coor in coords
+        ]
         [i[0].translate(i[1]) for i in zip(self.e_pixels, coords)]
 
     def init_d_boxes(self):
         coords = self.d_centroids()
-        self.d_pixels = [Square(self.d_box_length, self.d_box_length, False) for coor in coords]
+        self.d_pixels = [
+            Square(self.d_box_length, self.d_box_length, False) for coor in coords
+        ]
         [i[0].translate(i[1]) for i in zip(self.d_pixels, coords)]
 
     def plot2d(self, e_pixels=True, d_pixels=True, fig=None, show=False, rotate=True):
