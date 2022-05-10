@@ -294,7 +294,7 @@ class Probe:
         zs = np.round([self.br[2], self.tr[2], self.tl[2], self.bl[2], self.tip[2]], precision)
         return xs, ys, zs
 
-    def centroids(margin, box_length, box_sep, n_box):
+    def centroids(self, margin, box_length, box_sep, n_box):
         # Initial positions of the pixels
         points = np.array(
             [margin + box_length / 2 + i * (box_length + box_sep) for i in range(n_box)]
@@ -303,16 +303,16 @@ class Probe:
 
     def e_centroids(self):
         # Initial positions of the E-pixels
-        xs = centroids(
+        xs = self.centroids(
             self.e_box_horizontal_margin,
             self.e_box_length,
             self.e_box_sep,
             self.n_e_box[0],
         )
 
-        zs = centroids(
+        zs = self.centroids(
             self.e_box_vertical_margin,
-            self.e_box_width,
+            self.e_box_length,
             self.e_box_sep,
             self.n_e_box[1],
         )
@@ -321,16 +321,16 @@ class Probe:
 
     def d_centroids(self):
         # Initial positions of the D-pixels
-        xs = centroids(
+        xs = self.centroids(
             self.d_box_horizontal_margin,
             self.d_box_length,
             self.d_box_sep,
             self.n_d_box[0],
         )
 
-        zs = centroids(
+        zs = self.centroids(
             self.d_box_vertical_margin,
-            self.d_box_width,
+            self.d_box_length,
             self.d_box_sep,
             self.n_d_box[1],
         )
