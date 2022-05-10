@@ -20,7 +20,7 @@ def timer(func):
     return wrapper_timer
 
 
-class Square:
+class Rectangle:
     def __init__(self, h, w, name="", is_emitter=True):
         self.height = h
         self.width = w
@@ -38,7 +38,7 @@ class Square:
 
         self.centroid = np.array([0.0, 0.0, 0.0])
         self.n = np.array([0.0, 1.0, 0.0])  # normal vector of the surface
-        self.t = np.array([0.0, 0.0, 1.0])  # vector that shows the top of the square
+        self.t = np.array([0.0, 0.0, 1.0])  # vector that shows the top of the rectangle
 
     def rotate(self, seq="x", angles=90):
         r = R.from_euler(seq, angles, degrees=True)
@@ -78,7 +78,7 @@ class Square:
         zs = np.round([self.tl[2], self.bl[2], self.br[2], self.tr[2]], precision)
         return xs, ys, zs
 
-    def plot_squares2d(
+    def plot_rectangles2d(
         self,
         fill="toself",
         fill_color="#64fbbd",
@@ -105,7 +105,7 @@ class Square:
             )
         )
 
-    def plot_squares3d(
+    def plot_rectangles3d(
         self, fig=None, show=False, surfacecolor="turquoise", cone=False, size_ref=None
     ):
         if not fig:
@@ -339,12 +339,8 @@ class Probe:
         e_pixels = self.e_centroids()
         e_xs = set([centroid[0] for centroid in e_pixels])
         e_zs = set([centroid[2] for centroid in e_pixels])
-        x_overlaps = [
-            x for x in xs for ex in e_xs if (abs(x - ex) <= self.e_box_length / 2)
-        ]
-        z_overlaps = [
-            z for z in zs for ez in e_zs if (abs(z - ez) <= self.e_box_length / 2)
-        ]
+        x_overlaps = [x for x in xs for ex in e_xs if (abs(x - ex) <= self.e_box_length / 2)]
+        z_overlaps = [z for z in zs for ez in e_zs if (abs(z - ez) <= self.e_box_length / 2)]
         return [
             candidate
             for candidate in candidates
@@ -353,15 +349,13 @@ class Probe:
 
     def init_e_boxes(self):
         coords = self.e_centroids()
-        self.e_pixels = [
-            Square(self.e_box_length, self.e_box_length, True) for coor in coords
-        ]
+        self.e_pixels = [Rectangle(self.e_box_length, self.e_box_length, True) for coor in coords]
         [i[0].translate(i[1]) for i in zip(self.e_pixels, coords)]
 
     def init_d_boxes(self):
         coords = self.d_centroids()
         self.d_pixels = [
-            Square(self.d_box_length, self.d_box_length, False) for coor in coords
+            Rectangle(self.d_box_length, self.d_box_length, False) for coor in coords
         ]
         [i[0].translate(i[1]) for i in zip(self.d_pixels, coords)]
 
@@ -390,7 +384,7 @@ class Probe:
         # E-pixels
         if e_pixels:
             [
-                e_p.plot_squares2d(
+                e_p.plot_rectangles2d(
                     fig=fig,
                     fill_color="#00c1df",
                     mode="lines",
@@ -403,7 +397,7 @@ class Probe:
         # D-pixels
         if d_pixels:
             [
-                d_p.plot_squares2d(
+                d_p.plot_rectangles2d(
                     fig=fig,
                     fill_color="#64fbbd",
                     mode="lines",
@@ -491,7 +485,7 @@ class Probe:
         # E-pixels
         if e_pixels:
             [
-                e_pixel.plot_squares3d(
+                e_pixel.plot_rectangles3d(
                     fig=fig,
                     surfacecolor=e_pixel_surfacecolor,
                     cone=emitter_direction,
@@ -503,7 +497,7 @@ class Probe:
         # D-pixels
         if d_pixels:
             [
-                d_pixel.plot_squares3d(
+                d_pixel.plot_rectangles3d(
                     fig=fig,
                     surfacecolor=d_pixel_surfacecolor,
                     cone=detector_direction,
